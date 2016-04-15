@@ -1,21 +1,13 @@
-from cliquet.tests.support import unittest
-
-from . import BaseWebTestLocal
+from kinto_amo.tests.support import AMOTestCase
 
 
-class HelloViewTest(BaseWebTestLocal, unittest.TestCase):
+class HelloViewTest(AMOTestCase):
+
     def test_capability_is_exposed(self):
         resp = self.app.get('/')
         capabilities = resp.json['capabilities']
-        self.assertIn('attachments', capabilities)
-        expected = {
-            "description": "Add file attachments to records",
-            "url": "https://github.com/Kinto/kinto-attachment/",
-        }
-        self.assertEqual(expected, capabilities['attachments'])
+        self.assertIn('amo', capabilities)
 
-    def test_public_url_is_provided_in_public_settings(self):
-        resp = self.app.get('/')
-        settings = resp.json['settings']
-        self.assertEqual(settings['attachment.base_url'],
-                         'https://cdn.firefox.net/')
+        expected = {u'url': u'https://github.com/mozilla-services/kinto-amo/',
+                    u'description': u'AMO-style API for Kinto'}
+        self.assertEqual(expected, capabilities['amo'])

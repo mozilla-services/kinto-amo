@@ -1,13 +1,7 @@
-import mock
-import os
-import uuid
-
-from six.moves.urllib.parse import urlparse
-from cliquet.tests.support import unittest
+from kinto_amo.tests.support import AMOTestCase
 
 
-
-class AMOTest(object):
+class AMOTest(AMOTestCase):
     def test_amo_view(self):
         # do something
         pass
