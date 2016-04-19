@@ -23,6 +23,10 @@ test_requirements = [
     'webtest'
 ]
 
+dependency_links = [
+    'http://github.com/mozilla-services/kinto2xml/tarball/master#egg=kinto2xml-0.1.0.dev0'
+]
+
 setup(
     name='kinto-amo',
     version='0.1',
@@ -52,5 +56,6 @@ setup(
         'Programming Language :: Python :: 3.4',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
+    dependency_links=dependency_links
 )
