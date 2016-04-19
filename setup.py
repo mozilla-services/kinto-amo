@@ -14,6 +14,7 @@ with open('CHANGELOG.rst') as history_file:
 
 requirements = [
     'kinto>=1.11.0',
+    'kinto2xml',
 ]
 
 test_requirements = [
