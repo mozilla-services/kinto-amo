@@ -12,9 +12,9 @@ blocklist = Service(name="blocklist", path=path,
 
 @blocklist.get()
 def get_blocklist(request):
-    # api_ver = request.matchdict['api_ver']
+    api_ver = int(request.matchdict['api_ver'])
     app = request.matchdict['application_guid']
-    # app_ver = request.matchdict['application_ver']
+    app_ver = request.matchdict['application_ver']
 
     last_update = 0
 
@@ -52,10 +52,11 @@ def get_blocklist(request):
         lastupdate='%s' % last_update
     )
 
-    write_addons_items(xml_tree, addons_records, app_id=app)
-    write_plugin_items(xml_tree, plugin_records, app_id=app)
-    write_gfx_items(xml_tree, gfx_records, app_id=app)
-    write_cert_items(xml_tree, cert_records)
+    write_addons_items(xml_tree, addons_records, api_ver=api_ver, app_id=app)
+    write_plugin_items(xml_tree, plugin_records, api_ver=api_ver,
+                       app_id=app, app_ver=app_ver)
+    write_gfx_items(xml_tree, gfx_records, api_ver=api_ver, app_id=app)
+    write_cert_items(xml_tree, cert_records, api_ver=api_ver)
 
     doc = etree.ElementTree(xml_tree)
     request.response.content_type = "application/xml;charset=UTF-8"
