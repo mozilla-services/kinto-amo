@@ -8,6 +8,7 @@ class HelloViewTest(AMOTestCase):
         capabilities = resp.json['capabilities']
         self.assertIn('amo', capabilities)
 
-        expected = {u'url': u'https://github.com/mozilla-services/kinto-amo/',
-                    u'description': u'AMO-style API for Kinto'}
+        expected = {'url': 'https://github.com/mozilla-services/kinto-amo/',
+                    'description': 'An endpoint to generate v2 and v3 XML '
+                    'blocklist export.'}
         self.assertEqual(expected, capabilities['amo'])
