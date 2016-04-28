@@ -6,9 +6,9 @@ class HelloViewTest(AMOTestCase):
     def test_capability_is_exposed(self):
         resp = self.app.get('/')
         capabilities = resp.json['capabilities']
-        self.assertIn('amo', capabilities)
+        self.assertIn('blocklist-xml', capabilities)
 
         expected = {'url': 'https://github.com/mozilla-services/kinto-amo/',
                     'description': 'An endpoint to generate v2 and v3 XML '
                     'blocklist export.'}
-        self.assertEqual(expected, capabilities['amo'])
+        self.assertEqual(expected, capabilities['blocklist-xml'])
