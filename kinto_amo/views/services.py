@@ -1,4 +1,6 @@
-from cliquet import Service
+from cliquet import Service, utils
+from cliquet.storage import Filter
+
 from kinto2xml.exporter import (
     write_addons_items, write_plugin_items, write_gfx_items, write_cert_items
 )
@@ -24,28 +26,32 @@ def get_blocklist(request):
     # Addons blocklist
     addons_records, addons_records_count = request.registry.storage.get_all(
         collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources['addons']))
+        parent_id=PARENT_PATTERN.format(**resources['addons']),
+        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
     if addons_records:
         last_update = addons_records[-1]['last_modified']
 
     # Plugins blocklist
     plugin_records, plugin_records_count = request.registry.storage.get_all(
         collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources['plugins']))
+        parent_id=PARENT_PATTERN.format(**resources['plugins']),
+        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
     if plugin_records:
         last_update = max(last_update, plugin_records[-1]['last_modified'])
 
     # GFX blocklist
     gfx_records, gfx_records_count = request.registry.storage.get_all(
         collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources['gfx']))
+        parent_id=PARENT_PATTERN.format(**resources['gfx']),
+        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
     if gfx_records:
         last_update = max(last_update, gfx_records[-1]['last_modified'])
 
     # Certificates blocklist
     cert_records, cert_records_count = request.registry.storage.get_all(
         collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources['certificates']))
+        parent_id=PARENT_PATTERN.format(**resources['certificates']),
+        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
     if cert_records:
         last_update = max(last_update, cert_records[-1]['last_modified'])
 
