@@ -10,5 +10,14 @@ class HelloViewTest(AMOTestCase):
 
         expected = {'url': 'https://github.com/mozilla-services/kinto-amo/',
                     'description': 'An endpoint to generate v2 and v3 XML '
-                    'blocklist export.'}
+                    'blocklist export.',
+                    'resources': {
+                        'addons': {'bucket': 'blocklists',
+                                   'collection': 'addons'},
+                        'plugins': {'bucket': 'blocklists',
+                                    'collection': 'plugins'},
+                        'gfx': {'bucket': 'blocklists',
+                                'collection': 'gfx'},
+                        'certificates': {'bucket': 'blocklists',
+                                         'collection': 'certificates'}}}
         self.assertEqual(expected, capabilities['blocklist-xml'])

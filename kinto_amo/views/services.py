@@ -6,6 +6,8 @@ from lxml import etree
 
 path = '/blocklist/{api_ver}/{application_guid}/{application_ver}/'
 
+PARENT_PATTERN = "/buckets/{bucket}/collections/{collection}"
+
 blocklist = Service(name="blocklist", path=path,
                     description="Blocklist data")
 
@@ -17,32 +19,33 @@ def get_blocklist(request):
     app_ver = request.matchdict['application_ver']
 
     last_update = 0
+    resources = request.registry.amo_resources
 
     # Addons blocklist
     addons_records, addons_records_count = request.registry.storage.get_all(
         collection_id="record",
-        parent_id="/buckets/staging/collections/add-ons")
+        parent_id=PARENT_PATTERN.format(**resources['addons']))
     if addons_records:
         last_update = addons_records[-1]['last_modified']
 
     # Plugins blocklist
     plugin_records, plugin_records_count = request.registry.storage.get_all(
         collection_id="record",
-        parent_id="/buckets/staging/collections/plugins")
+        parent_id=PARENT_PATTERN.format(**resources['plugins']))
     if plugin_records:
         last_update = max(last_update, plugin_records[-1]['last_modified'])
 
     # GFX blocklist
     gfx_records, gfx_records_count = request.registry.storage.get_all(
         collection_id="record",
-        parent_id="/buckets/staging/collections/gfx")
+        parent_id=PARENT_PATTERN.format(**resources['gfx']))
     if gfx_records:
         last_update = max(last_update, gfx_records[-1]['last_modified'])
 
     # Certificates blocklist
     cert_records, cert_records_count = request.registry.storage.get_all(
         collection_id="record",
-        parent_id="/buckets/staging/collections/certificates")
+        parent_id=PARENT_PATTERN.format(**resources['certificates']))
     if cert_records:
         last_update = max(last_update, cert_records[-1]['last_modified'])
 
