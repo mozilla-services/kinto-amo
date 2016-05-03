@@ -22,6 +22,14 @@ class AMOTest(AMOTestCase):
         resp = self.app.get(url)
         assert resp.content_type == "application/xml"
 
+    def test_amo_view_only_match_numeric_api_ver(self):
+        url = SERVICE_ENDPOINT.format(api_ver="wrong",
+                                      app=constants.FIREFOX_APPID,
+                                      app_ver="46.0")
+        resp = self.app.get(url).maybe_follow(status=404)
+
+        assert resp.content_type == "application/json"
+
     def test_amo_views_passes_api_ver_and_app_args_to_addons_exporter(self):
         with mock.patch('kinto_amo.views.services.write_addons_items') as wai:
             url = SERVICE_ENDPOINT.format(api_ver="3",
