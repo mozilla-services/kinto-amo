@@ -21,37 +21,24 @@ def get_blocklist(request):
     app_ver = request.matchdict['application_ver']
 
     last_update = 0
-    resources = request.registry.amo_resources
 
     # Addons blocklist
-    addons_records, addons_records_count = request.registry.storage.get_all(
-        collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources['addons']),
-        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
+    addons_records, addons_records_count = get_records(request, 'addons')
     if addons_records:
         last_update = addons_records[-1]['last_modified']
 
     # Plugins blocklist
-    plugin_records, plugin_records_count = request.registry.storage.get_all(
-        collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources['plugins']),
-        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
+    plugin_records, plugin_records_count = get_records(request, 'plugins')
     if plugin_records:
         last_update = max(last_update, plugin_records[-1]['last_modified'])
 
     # GFX blocklist
-    gfx_records, gfx_records_count = request.registry.storage.get_all(
-        collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources['gfx']),
-        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
+    gfx_records, gfx_records_count = get_records(request, 'gfx')
     if gfx_records:
         last_update = max(last_update, gfx_records[-1]['last_modified'])
 
     # Certificates blocklist
-    cert_records, cert_records_count = request.registry.storage.get_all(
-        collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources['certificates']),
-        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
+    cert_records, cert_records_count = get_records(request, 'certificates')
     if cert_records:
         last_update = max(last_update, cert_records[-1]['last_modified'])
 
@@ -77,3 +64,11 @@ def get_blocklist(request):
         encoding='UTF-8').decode('utf-8'))
 
     return request.response
+
+
+def get_records(request, collection):
+    resources = request.registry.amo_resources
+    return request.registry.storage.get_all(
+        collection_id="record",
+        parent_id=PARENT_PATTERN.format(**resources[collection]),
+        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])

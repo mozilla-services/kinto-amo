@@ -1,10 +1,17 @@
+import json
 import mock
+import os
 import xml.etree.ElementTree as ET
 
 from kinto2xml import constants
 from kinto_amo.tests.support import AMOTestCase
 
 SERVICE_ENDPOINT = "/blocklist/{api_ver}/{app}/{app_ver}/"
+
+FIXTURES_FILE_NAME = os.path.join(os.path.dirname(__file__), 'fixtures.json')
+
+with open(FIXTURES_FILE_NAME) as fd:
+    FIXTURES = json.load(fd)
 
 
 class AMOTest(AMOTestCase):
@@ -76,149 +83,39 @@ class AMOWithFixturesTest(AMOTestCase):
 
         # Create addons records
         url = '/buckets/blocklists/collections/addons/records'
-        self.app.post_json(url, {"data": {
-            "guid": "{0153E448-190B-4987-BDE1-F256CADA672F}",
-            "blockID": "i914",
-            "enabled": True,
-            "details": {
-                "who": "All Firefox users who have this add-on installed.",
-                "created": "2015-06-02T09:56:58Z",
-                "bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=1170633",
-                "name": "RealPlayer Browser Record Plugin",
-                "why": "Some versions of this extension are causing crashes."},
-            "versionRange": [{
-                "targetApplication": [{
-                    "minVersion": "39.0a1",
-                    "guid": "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}",
-                    "maxVersion": "*"}],
-                "minVersion": "0",
-                "maxVersion": "*",
-                "severity": 3}],
-            "prefs": []
-        }}, headers=self.headers)
+        self.app.post_json(url, {"data": FIXTURES['addons']["enabled"]},
+                           headers=self.headers)
 
-        self.app.post_json(url, {"data": {
-            "guid": "{cc8f597b-0765-404e-a575-82aefbd81daf}",
-            "blockID": "i380",
-            "enabled": False,
-            "details": {
-                "who": "All Firefox users who have this add-on installed.",
-                "created": "2013-06-19T13:03:00Z",
-                "bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=866332",
-                "name": "Update My Browser (malware)",
-                "why": "This is a malicious add-on."},
-            "versionRange": [{
-                "targetApplication": [],
-                "minVersion": "0",
-                "maxVersion": "*",
-                "severity": 3}],
-            "prefs": []
-        }}, headers=self.headers)
+        self.app.post_json(url, {"data": FIXTURES['addons']["disabled"]},
+                           headers=self.headers)
 
         # Create plugins records
         url = '/buckets/blocklists/collections/plugins/records'
-        self.app.post_json(url, {"data": {
-            "infoURL": "https://get.adobe.com/flashplayer/",
-            "blockID": "p160",
-            "enabled": True,
-            "matchFilename": "NPSWF32\\.dll",
-            "details": {
-                "who": "All Firefox users who have this plugin installed.",
-                "created": "2012-10-05T12:34:22Z",
-                "bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=797378",
-                "name": "Adobe Flash 10.2.* and lower",
-                "why": "This plugin is outdated and is potentially insecure."},
-            "versionRange": [{
-                "targetApplication": [{
-                    "minVersion": "4.0",
-                    "guid": "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}",
-                    "maxVersion": "16.*"}],
-                "minVersion": "0",
-                "maxVersion": "10.2.9999",
-                "severity": 0,
-                "vulnerabilityStatus": 1}]
-        }}, headers=self.headers)
+        self.app.post_json(url, {"data": FIXTURES['plugins']["enabled"]},
+                           headers=self.headers)
 
-        self.app.post_json(url, {"data": {
-            "blockID": "p152",
-            "enabled": False,
-            "matchFilename": "npctrl\\.dll",
-            "details": {
-                "who": "All Firefox users who have this plugin installed.",
-                "created": "2012-10-05T10:34:12Z",
-                "bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=797378",
-                "name": "Silverlight 4.1.10328.0 and lower",
-                "why": "This plugin is outdated and is potentially insecure."},
-            "versionRange": [{
-                "targetApplication": [],
-                "minVersion": "0",
-                "maxVersion": "4.1.10328.0",
-                "severity": 0,
-                "vulnerabilityStatus": 1}]
-        }}, headers=self.headers)
+        self.app.post_json(url, {"data": FIXTURES['plugins']["disabled"]},
+                           headers=self.headers)
 
         # Create gfx records
         url = '/buckets/blocklists/collections/gfx/records'
-        self.app.post_json(url, {"data": {
-            "vendor": "0x10de",
-            "blockID": "g200",
-            "enabled": True,
-            "feature": "WEBGL_MSAA",
-            "devices": [],
-            "featureStatus": "BLOCKED_DEVICE",
-            "details": {
-                "who": "All Firefox users.",
-                "created": "2012-11-12T10:35:32Z",
-                "bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=809550",
-                "name": "Mac OS X WebGL anti-aliasing",
-                "why": "Security problems."},
-            "os": "Darwin 11"
-        }}, headers=self.headers)
+        self.app.post_json(url, {"data": FIXTURES['gfx']["enabled"]},
+                           headers=self.headers)
 
-        self.app.post_json(url, {"data": {
-            "driverVersionComparator": "EQUAL",
-            "driverVersion": "8.15.10.2086",
-            "vendor": "0x8086",
-            "blockID": "g1124",
-            "enabled": False,
-            "devices": ["0x2a42", "0x2e22", "0x2e12", "0x2e32", "0x0046"],
-            "featureStatus": "BLOCKED_DRIVER_VERSION",
-            "details": {
-                "who": ".",
-                "created": "2016-02-22T23:40:14Z",
-                "bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=1170143",
-                "name": "Intel Driver 8.15.10.2086",
-                "why": "."},
-            "os": "All"
-        }}, headers=self.headers)
+        self.app.post_json(url, {"data": FIXTURES['gfx']["disabled"]},
+                           headers=self.headers)
 
         # Create certificates records
         url = '/buckets/blocklists/collections/certificates/records'
-        resp = self.app.post_json(url, {"data": {
-            "serialNumber": "UoRGnb96CUDTxIqVry6LBg==",
-            "enabled": True,
-            "details": {
-                "who": ".",
-                "created": "2015-04-07T11:04:11Z",
-                "bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=1150585",
-                "name": "XS4ALL certificate",
-                "why": "."},
-            "issuerName": "MIGQMQswCQYDVQQGEwJHQjEbMBkGA1U...NB"
-        }}, headers=self.headers)
+        resp = self.app.post_json(url, {
+            "data": FIXTURES['certificates']["enabled"]
+        }, headers=self.headers)
 
         self.last_modified = resp.json['data']['last_modified']
 
-        self.app.post_json(url, {"data": {
-            "serialNumber": "NMpMcEnex3eXx4ohk9glcQ==",
-            "enabled": False,
-            "details": {
-                "who": ".",
-                "created": "2016-03-01T21:22:27Z",
-                "bug": "https://bugzilla.mozilla.org/show_bug.cgi?id=1252142",
-                "name": "exceptional SHA-1 Certificates",
-                "why": "."},
-            "issuerName": "MI...yIENBIC0gRzM="
-        }}, headers=self.headers)
+        self.app.post_json(url, {
+            "data": FIXTURES['certificates']["disabled"]
+        }, headers=self.headers)
 
     def test_last_updated_is_taken_from_records(self):
         url = SERVICE_ENDPOINT.format(api_ver="3",
