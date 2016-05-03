@@ -14,6 +14,7 @@ with open('CHANGELOG.rst') as history_file:
 
 requirements = [
     'kinto>=1.11.0',
+    'kinto2xml',
 ]
 
 test_requirements = [
@@ -21,6 +22,7 @@ test_requirements = [
     'unittest2',
     'webtest'
 ]
+
 
 setup(
     name='kinto-amo',
@@ -51,5 +53,5 @@ setup(
         'Programming Language :: Python :: 3.4',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
 )
