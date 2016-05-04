@@ -6,7 +6,8 @@ from kinto2xml.exporter import (
 )
 from lxml import etree
 
-path = '/blocklist/{api_ver:\d+}/{application_guid}/{application_ver}/'
+path = ('/blocklist/{api_ver:\d+}/{application_guid}/{application_ver}/'
+        '{metrics:.*}')
 
 PARENT_PATTERN = "/buckets/{bucket}/collections/{collection}"
 
