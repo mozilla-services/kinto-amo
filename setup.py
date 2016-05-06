@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-try:
-    from setuptools import setup
-except ImportError:
-    from distutils.core import setup
+import codecs
+import os
+from setuptools import setup, find_packages
 
+here = os.path.abspath(os.path.dirname(__file__))
 
-with open('README.rst') as readme_file:
-    readme = readme_file.read()
+with codecs.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
+    readme = f.read()
 
-with open('CHANGELOG.rst') as history_file:
-    history = history_file.read()
+with codecs.open(os.path.join(here, 'CHANGELOG.rst'), encoding='utf-8') as f:
+    history = f.read()
 
 requirements = [
     'kinto>=1.11.0',
@@ -19,6 +19,7 @@ requirements = [
 
 test_requirements = [
     'mock',
+    'pytest',
     'unittest2',
     'webtest'
 ]
@@ -26,17 +27,13 @@ test_requirements = [
 
 setup(
     name='kinto-amo',
-    version='0.1',
+    version='0.1.0',
     description="AMO-style routing for Kinto - with XML",
     long_description=readme + '\n\n' + history,
     author="Mozilla",
     author_email='kinto@mozilla.org',
     url='https://github.com/mozilla-services/kinto-amo',
-    packages=[
-        'kinto_amo',
-    ],
-    package_dir={'kinto_amo':
-                 'kinto_amo'},
+    packages=find_packages(),
     include_package_data=True,
     install_requires=requirements,
     license="Apache License (2.0)",
@@ -52,6 +49,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
     ],
-    test_suite='tests',
+    test_suite='kinto_amo.tests',
     tests_require=test_requirements,
 )
