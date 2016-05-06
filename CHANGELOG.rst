@@ -1,10 +1,10 @@
 CHANGELOG
 =========
 
-0.2.0 (unreleased)
+0.1.1 (2016-05-06)
 ------------------
 
-- Nothing changed yet.
+- Missing commit in previous release.
 
 
 0.1.0 (2016-05-06)
