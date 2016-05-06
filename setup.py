@@ -19,6 +19,7 @@ requirements = [
 
 test_requirements = [
     'mock',
+    'pytest',
     'unittest2',
     'webtest'
 ]
@@ -48,6 +49,6 @@ setup(
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.4',
     ],
-    test_suite='tests',
+    test_suite='kinto_amo.tests',
     tests_require=test_requirements,
 )
