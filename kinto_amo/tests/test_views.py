@@ -3,7 +3,7 @@ import mock
 import os
 import xml.etree.ElementTree as ET
 
-from kinto2xml import constants
+from amo2kinto import constants
 from kinto_amo.tests.support import AMOTestCase
 
 SERVICE_ENDPOINT = "/blocklist/{api_ver}/{app}/{app_ver}/"

@@ -14,7 +14,7 @@ with codecs.open(os.path.join(here, 'CHANGELOG.rst'), encoding='utf-8') as f:
 
 requirements = [
     'kinto>=1.11.0',
-    'kinto2xml',
+    'amo2kinto',
 ]
 
 test_requirements = [

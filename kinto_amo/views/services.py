@@ -1,7 +1,7 @@
 from cliquet import Service, utils
 from cliquet.storage import Filter
 
-from kinto2xml.exporter import (
+from amo2kinto.exporter import (
     write_addons_items, write_plugin_items, write_gfx_items, write_cert_items
 )
 from lxml import etree
