@@ -1,6 +1,9 @@
-*.pyc
-.coverage
-.tox/
 *.egg-info/
-__pycache__/
+*.pyc
 .cache/
+.coverage
+.eggs/
+.tox/
+.venv/
+__pycache__/
+schemas.json

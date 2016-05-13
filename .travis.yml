@@ -4,7 +4,11 @@ env:
     - TOX_ENV=py27
     - TOX_ENV=py34
     - TOX_ENV=kinto-master
+    - TOX_ENV=functional
     - TOX_ENV=flake8
+matrix:
+  allow_failures:
+    - env: TOX_ENV=functional
 install:
     - make install
 script:
