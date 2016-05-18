@@ -22,9 +22,6 @@ virtualenv: $(PYTHON)
 $(PYTHON):
 	virtualenv $(VENV)
 
-moto:
-	$(VENV)/bin/moto_server s3bucket_path -H 0.0.0.0 -p 5000
-
 tests-once: install
 	$(VENV)/bin/tox -e py27
 
