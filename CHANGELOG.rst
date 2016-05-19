@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-0.2.0 (unreleased)
+0.2.0 (2016-05-19)
 ------------------
 
 - Update to ``kinto.core`` for compatibility with Kinto 3.0. This
