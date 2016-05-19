@@ -1,5 +1,5 @@
-from cliquet import Service, utils
-from cliquet.storage import Filter
+from kinto.core import Service, utils
+from kinto.core.storage import Filter
 
 from amo2kinto.exporter import (
     write_addons_items, write_plugin_items, write_gfx_items, write_cert_items
