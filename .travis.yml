@@ -17,7 +17,7 @@ matrix:
           WITH=kinto-master
       install:
         - make install
-        - .venv/bin/pip install -U https://github.com/Kinto/kinto/zipball/master
+        - pip install -U https://github.com/Kinto/kinto/zipball/master
         - make run-kinto &
   allow_failures:
     - env:
