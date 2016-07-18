@@ -13,7 +13,7 @@ with codecs.open(os.path.join(here, 'CHANGELOG.rst'), encoding='utf-8') as f:
     history = f.read()
 
 requirements = [
-    'kinto>=1.11.0',
+    'kinto>=3.3.0',
     'amo2kinto',
 ]
 
