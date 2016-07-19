@@ -32,3 +32,7 @@ In the Kinto project settings
 
     kinto.includes = kinto_amo
 
+    # kinto.amo.addons = /buckets/blocklists/collections/addons
+    # kinto.amo.plugins = /buckets/blocklists/collections/plugins
+    # kinto.amo.gfx = /buckets/blocklists/collections/gfx
+    # kinto.amo.certificates = /buckets/blocklists/collections/certificates
