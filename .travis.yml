@@ -5,6 +5,20 @@ env:
     - TOX_ENV=py34
     - TOX_ENV=kinto-master
     - TOX_ENV=flake8
+matrix:
+  include:
+    - env:
+        - TOX_ENV=functional
+      install:
+        - make install install-kinto
+        - make run-kinto &
+    - env:
+        - TOX_ENV=functional
+          WITH=kinto-master
+      install:
+        - make install
+        - pip install -U https://github.com/Kinto/kinto/zipball/master
+        - make run-kinto &
 install:
     - make install
 script:
