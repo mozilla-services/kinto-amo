@@ -19,11 +19,6 @@ matrix:
         - make install
         - pip install -U https://github.com/Kinto/kinto/zipball/master
         - make run-kinto &
-  allow_failures:
-    - env:
-        - TOX_ENV=functional
-        - TOX_ENV=functional
-          WITH=kinto-master
 install:
     - make install
 script:
