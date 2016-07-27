@@ -1,5 +1,9 @@
+import pkg_resources
 from collections import OrderedDict
 from .utils import parse_resource
+
+#: Module version, as defined in PEP-0396.
+__version__ = pkg_resources.get_distribution(__package__).version
 
 DEFAULT_ADDONS = '/buckets/blocklists/collections/addons'
 DEFAULT_PLUGINS = '/buckets/blocklists/collections/plugins'
@@ -25,7 +29,7 @@ def includeme(config):
     # Expose capability
     url = "https://github.com/mozilla-services/kinto-amo/"
     desc = "An endpoint to generate v2 and v3 XML blocklist export."
-    config.add_api_capability("blocklist-xml",
+    config.add_api_capability("blocklist-xml", version=__version__,
                               description=desc, url=url, resources=resources)
 
     config.scan('kinto_amo.views')

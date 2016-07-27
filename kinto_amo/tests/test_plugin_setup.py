@@ -1,3 +1,4 @@
+from kinto_amo import __version__ as amo_version
 from kinto_amo.tests.support import AMOTestCase
 
 
@@ -11,6 +12,7 @@ class HelloViewTest(AMOTestCase):
         expected = {'url': 'https://github.com/mozilla-services/kinto-amo/',
                     'description': 'An endpoint to generate v2 and v3 XML '
                     'blocklist export.',
+                    'version': amo_version,
                     'resources': {
                         'addons': {'bucket': 'blocklists',
                                    'collection': 'addons'},
