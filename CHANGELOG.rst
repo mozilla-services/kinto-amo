@@ -1,10 +1,10 @@
 CHANGELOG
 =========
 
-0.2.1 (unreleased)
+0.3.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+- Add the plugin version in the capability.
 
 
 0.2.0 (2016-05-19)
