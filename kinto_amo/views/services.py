@@ -1,3 +1,4 @@
+from pyramid.httpexceptions import HTTPNotFound
 from kinto.core import Service, utils
 from kinto.core.storage import Filter
 
@@ -6,7 +7,7 @@ from amo2kinto.exporter import (
 )
 from lxml import etree
 
-path = ('/blocklist/{api_ver:\d+}/{application_guid}/{application_ver}/'
+path = ('/{prefix}/{api_ver:\d+}/{application_guid}/{application_ver}/'
         '{metrics:.*}')
 
 PARENT_PATTERN = "/buckets/{bucket}/collections/{collection}"
@@ -17,29 +18,33 @@ blocklist = Service(name="blocklist", path=path,
 
 @blocklist.get()
 def get_blocklist(request):
+    prefix = request.matchdict['prefix']
     api_ver = int(request.matchdict['api_ver'])
     app = request.matchdict['application_guid']
     app_ver = request.matchdict['application_ver']
 
+    # 1. Verify that we have a config for that prefix
+    if prefix not in request.registry.amo_resources:
+        raise HTTPNotFound()
     last_update = 0
 
     # Addons blocklist
-    addons_records, addons_records_count = get_records(request, 'addons')
+    addons_records, addons_records_count = get_records(request, prefix, 'addons')
     if addons_records:
         last_update = addons_records[-1]['last_modified']
 
     # Plugins blocklist
-    plugin_records, plugin_records_count = get_records(request, 'plugins')
+    plugin_records, plugin_records_count = get_records(request, prefix, 'plugins')
     if plugin_records:
         last_update = max(last_update, plugin_records[-1]['last_modified'])
 
     # GFX blocklist
-    gfx_records, gfx_records_count = get_records(request, 'gfx')
+    gfx_records, gfx_records_count = get_records(request, prefix, 'gfx')
     if gfx_records:
         last_update = max(last_update, gfx_records[-1]['last_modified'])
 
     # Certificates blocklist
-    cert_records, cert_records_count = get_records(request, 'certificates')
+    cert_records, cert_records_count = get_records(request, prefix, 'certificates')
     if cert_records:
         last_update = max(last_update, cert_records[-1]['last_modified'])
 
@@ -67,9 +72,9 @@ def get_blocklist(request):
     return request.response
 
 
-def get_records(request, collection):
+def get_records(request, prefix, collection):
     resources = request.registry.amo_resources
     return request.registry.storage.get_all(
         collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources[collection]),
+        parent_id=PARENT_PATTERN.format(**resources[prefix][collection]),
         filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
