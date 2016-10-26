@@ -208,7 +208,6 @@ class AMOCustomTest(AMOTestCase):
         settings['amo.preview.certificates'] = '/buckets/blocklists/collections/certificates'
         return settings
 
-    # 1. Have a 404 when the resource is not defined
     def test_returns_a_404_when_the_resource_is_not_defined(self):
         url = SERVICE_ENDPOINT.replace('blocklist', 'unknown') \
                               .format(api_ver="3",
@@ -216,7 +215,6 @@ class AMOCustomTest(AMOTestCase):
                                       app_ver="46.0")
         self.app.get(url).follow(status=404)
 
-    # 2. Be able to graph the file when the resource is defined
     def test_get_the_preview_resource_is_defined(self):
         url = SERVICE_ENDPOINT.replace('blocklist', 'preview') \
                               .format(api_ver="3",
@@ -227,7 +225,6 @@ class AMOCustomTest(AMOTestCase):
 
 class AMOSetupFailureTest(AMOTestCase):
 
-    # 3. Raise when you forget to define one resource blocklist
     def test_configuration_error_when_blocklist_resource_missing(self):
         settings = {
             'amo.preview.addons': '/buckets/blocklists/collections/addons',
@@ -237,7 +234,6 @@ class AMOSetupFailureTest(AMOTestCase):
         with pytest.raises(ConfigurationError):
             self.make_app(settings)
 
-    # 4. Raise if you define a unknow resource blocklist
     def test_configuration_error_when_unknown_blocklist_resource_present(self):
         settings = {
             'amo.preview.addons': '/buckets/blocklists/collections/addons',

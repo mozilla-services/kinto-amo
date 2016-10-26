@@ -18,6 +18,8 @@ def includeme(config):
     resources = OrderedDict()
 
     # Configure default settings
+    # We are using an OrderedDict to always present the resource in
+    # the same order in the capability page, it also helps for tests.
     resources['blocklist'] = OrderedDict()
     resources['blocklist']['addons'] = parse_resource(DEFAULT_ADDONS)
     resources['blocklist']['plugins'] = parse_resource(DEFAULT_PLUGINS)
@@ -28,7 +30,7 @@ def includeme(config):
     for settings_key, settings_value in settings.items():
         if not settings_key.startswith('amo.'):
             continue
-        parts = settings_key.split('.')
+        parts = settings_key.split('.', 3)
 
         if len(parts) == 2:  # amo.addons
             prefix = 'blocklist'
@@ -42,7 +44,7 @@ def includeme(config):
     for resource in resources.values():
         inter = set(resource.keys()) & {'addons', 'plugins', 'gfx', 'certificates'}
         if len(inter) != 4:
-            raise ConfigurationError("Invalid blocklist: %s" % inter)
+            raise ConfigurationError("Incomplete blocklist configuration: %s" % inter)
 
     config.registry.amo_resources = resources
 
