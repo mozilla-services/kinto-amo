@@ -22,4 +22,6 @@ class AMOTestCase(BaseWebTest, unittest.TestCase):
         config = configparser.ConfigParser()
         config.read(ini_path)
         settings = dict(config.items('app:main'))
+        if extras:
+            settings.update(extras)
         return settings

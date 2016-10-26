@@ -40,9 +40,9 @@ def includeme(config):
         resource[blocklist] = parse_resource(settings_value)
 
     for resource in resources.values():
-        diff = set(resource.keys()) - {'addons', 'plugins', 'gfx', 'certificates'}
-        if len(diff) != 0:
-            raise ConfigurationError("Invalid blocklist: %s" % diff)
+        inter = set(resource.keys()) & {'addons', 'plugins', 'gfx', 'certificates'}
+        if len(inter) != 4:
+            raise ConfigurationError("Invalid blocklist: %s" % inter)
 
     config.registry.amo_resources = resources
 

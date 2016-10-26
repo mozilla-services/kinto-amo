@@ -2,8 +2,6 @@ import json
 import mock
 import os
 import pytest
-import unittest
-import webtest
 import xml.etree.ElementTree as ET
 
 from amo2kinto import constants
