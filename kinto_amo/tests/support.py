@@ -1,15 +1,27 @@
 import os
-import webtest
+import unittest
 
-from kinto.tests.core import support as kinto_support
-from kinto.tests.core.support import unittest
+try:
+    import ConfigParser as configparser
+except ImportError:
+    import configparser
+
+from kinto import main as kinto_main
+from kinto.core.testing import BaseWebTest
+
+HERE = os.path.dirname(os.path.abspath(__file__))
 
 
-class AMOTestCase(unittest.TestCase):
-    def setUp(self):
-        super(AMOTestCase, self).setUp()
-        self.config = 'config.ini'
-        curdir = os.path.dirname(os.path.realpath(__file__))
-        app = webtest.TestApp("config:%s" % self.config, relative_to=curdir)
-        app.RequestClass = kinto_support.get_request_class(prefix="v1")
-        self.app = app
+class AMOTestCase(BaseWebTest, unittest.TestCase):
+    api_prefix = "v1"
+    entry_point = kinto_main
+    config = 'config.ini'
+
+    def get_app_settings(self, extras=None):
+        ini_path = os.path.join(HERE, self.config)
+        config = configparser.ConfigParser()
+        config.read(ini_path)
+        settings = dict(config.items('app:main'))
+        if extras:
+            settings.update(extras)
+        return settings

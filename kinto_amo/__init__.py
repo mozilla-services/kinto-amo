@@ -1,5 +1,6 @@
 import pkg_resources
 from collections import OrderedDict
+from pyramid.exceptions import ConfigurationError
 from .utils import parse_resource
 
 #: Module version, as defined in PEP-0396.
@@ -15,14 +16,35 @@ def includeme(config):
     # Parse resources
     settings = config.get_settings()
     resources = OrderedDict()
-    resources['addons'] = parse_resource(
-        settings.get('amo.addons', DEFAULT_ADDONS))
-    resources['plugins'] = parse_resource(
-        settings.get('amo.plugins', DEFAULT_PLUGINS))
-    resources['gfx'] = parse_resource(
-        settings.get('amo.gfx', DEFAULT_GFX))
-    resources['certificates'] = parse_resource(
-        settings.get('amo.certificates', DEFAULT_CERTIFICATES))
+
+    # Configure default settings
+    # We are using an OrderedDict to always present the resource in
+    # the same order in the capability page, it also helps for tests.
+    resources['blocklist'] = OrderedDict()
+    resources['blocklist']['addons'] = parse_resource(DEFAULT_ADDONS)
+    resources['blocklist']['plugins'] = parse_resource(DEFAULT_PLUGINS)
+    resources['blocklist']['gfx'] = parse_resource(DEFAULT_GFX)
+    resources['blocklist']['certificates'] = parse_resource(DEFAULT_CERTIFICATES)
+
+    # Read blocklist settings
+    for settings_key, settings_value in settings.items():
+        if not settings_key.startswith('amo.'):
+            continue
+        parts = settings_key.split('.', 3)
+
+        if len(parts) == 2:  # amo.addons
+            prefix = 'blocklist'
+            _, blocklist = parts
+        else:  # amo.preview.addons
+            _, prefix, blocklist = parts
+
+        resource = resources.setdefault(prefix, OrderedDict())
+        resource[blocklist] = parse_resource(settings_value)
+
+    for resource in resources.values():
+        inter = set(resource.keys()) & {'addons', 'plugins', 'gfx', 'certificates'}
+        if len(inter) != 4:
+            raise ConfigurationError("Incomplete blocklist configuration: %s" % inter)
 
     config.registry.amo_resources = resources
 

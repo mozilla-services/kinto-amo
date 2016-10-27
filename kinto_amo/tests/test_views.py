@@ -1,10 +1,13 @@
 import json
 import mock
 import os
+import pytest
 import xml.etree.ElementTree as ET
 
 from amo2kinto import constants
 from kinto_amo.tests.support import AMOTestCase
+from pyramid.exceptions import ConfigurationError
+
 
 SERVICE_ENDPOINT = "/blocklist/{api_ver}/{app}/{app_ver}/"
 
@@ -193,3 +196,52 @@ class AMOWithFixturesTest(AMOTestCase):
         gfx = list(xml.findall('./*/{}gfxBlacklistEntry'.format(namespace)))
         gfx_count = len(gfx)
         assert gfx_count == 1, 'More than one addon: %s' % gfx
+
+
+class AMOCustomTest(AMOTestCase):
+
+    def get_app_settings(self, extras=None):
+        settings = super(AMOCustomTest, self).get_app_settings(extras)
+        settings['amo.preview.addons'] = '/buckets/blocklists/collections/addons'
+        settings['amo.preview.plugins'] = '/buckets/blocklists/collections/plugins'
+        settings['amo.preview.gfx'] = '/buckets/blocklists/collections/gfx'
+        settings['amo.preview.certificates'] = '/buckets/blocklists/collections/certificates'
+        return settings
+
+    def test_returns_a_404_when_the_resource_is_not_defined(self):
+        url = SERVICE_ENDPOINT.replace('blocklist', 'unknown') \
+                              .format(api_ver="3",
+                                      app=constants.FIREFOX_APPID,
+                                      app_ver="46.0")
+        self.app.get(url).follow(status=404)
+
+    def test_get_the_preview_resource_is_defined(self):
+        url = SERVICE_ENDPOINT.replace('blocklist', 'preview') \
+                              .format(api_ver="3",
+                                      app=constants.FIREFOX_APPID,
+                                      app_ver="46.0")
+        self.app.get(url, status=200)
+
+
+class AMOSetupFailureTest(AMOTestCase):
+
+    def test_configuration_error_when_blocklist_resource_missing(self):
+        settings = {
+            'amo.preview.addons': '/buckets/blocklists/collections/addons',
+            'amo.preview.plugins': '/buckets/blocklists/collections/plugins'
+        }
+
+        with pytest.raises(ConfigurationError):
+            self.make_app(settings)
+
+    def test_configuration_error_when_unknown_blocklist_resource_present(self):
+        settings = {
+            'amo.preview.addons': '/buckets/blocklists/collections/addons',
+            'amo.preview.plugins': '/buckets/blocklists/collections/plugins',
+            'amo.preview.gfx': '/buckets/blocklists/collections/gfx',
+            'amo.preview.certificates': '/buckets/blocklists/collections/certificates',
+            'amo.preview.unknown': 'should fail',
+        }
+
+        with pytest.raises(ConfigurationError):
+            self.make_app(settings)
