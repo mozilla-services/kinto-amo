@@ -1,10 +1,11 @@
 CHANGELOG
 =========
 
-0.3.0 (unreleased)
+0.3.0 (2016-10-27)
 ------------------
 
-- Add the plugin version in the capability.
+- Add the plugin version in the capability. (#15)
+- Enable creation of preview XML files from other collections. (#18)
 
 
 0.2.0 (2016-05-19)
