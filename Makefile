@@ -20,7 +20,7 @@ $(INSTALL_STAMP): $(PYTHON) setup.py
 build-requirements:
 	$(VIRTUALENV) $(TEMPDIR)
 	$(TEMPDIR)/bin/pip install -Ue .
-	$(TEMPDIR)/bin/pip freeze | grep -v -- '-e' > requirements.txt
+	$(TEMPDIR)/bin/pip freeze | grep -v -- '^-e' > requirements.txt
 
 virtualenv: $(PYTHON)
 $(PYTHON):
