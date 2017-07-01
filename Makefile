@@ -1,4 +1,4 @@
-VIRTUALENV = virtualenv
+VIRTUALENV = virtualenv --python=python3
 VENV := $(shell echo $${VIRTUAL_ENV-.venv})
 PYTHON = $(VENV)/bin/python
 INSTALL_STAMP = $(VENV)/.install.stamp
@@ -24,13 +24,10 @@ build-requirements:
 
 virtualenv: $(PYTHON)
 $(PYTHON):
-	virtualenv $(VENV)
-
-moto:
-	$(VENV)/bin/moto_server s3bucket_path -H 0.0.0.0 -p 5000
+	$(VIRTUALENV) $(VENV)
 
 tests-once: install
-	$(VENV)/bin/tox -e py27
+	$(VENV)/bin/tox -e py35
 
 tests:
 	$(VENV)/bin/tox

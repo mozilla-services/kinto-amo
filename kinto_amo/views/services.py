@@ -1,4 +1,4 @@
-from pyramid.httpexceptions import HTTPNotFound
+from pyramid.httpexceptions import HTTPNotFound, HTTPNotModified
 from kinto.core import Service, utils
 from kinto.core.storage import Filter
 
@@ -47,6 +47,20 @@ def get_blocklist(request):
     cert_records, cert_records_count = get_records(request, prefix, 'certificates')
     if cert_records:
         last_update = max(last_update, cert_records[-1]['last_modified'])
+
+    # Expose highest timestamp in response headers.
+    last_etag = '"{}"'.format(last_update)
+    request.response.headers['ETag'] = last_etag
+    request.response.last_modified = last_update / 1000.0
+
+    if_none_match = request.headers.get('If-None-Match')
+    if_modified_since = request.headers.get('If-Modified-Since')
+    if if_none_match is not None or if_modified_since is not None:
+        if if_none_match == last_etag or request.if_modified_since == request.response.last_modified:
+            response = HTTPNotModified()
+            response.headers['ETag'] = last_etag
+            response.last_modified = last_update / 1000.0
+            raise response
 
     xml_tree = etree.Element(
         'blocklist',
