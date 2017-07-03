@@ -56,7 +56,9 @@ def get_blocklist(request):
     if_none_match = request.headers.get('If-None-Match')
     if_modified_since = request.headers.get('If-Modified-Since')
     if if_none_match is not None or if_modified_since is not None:
-        if if_none_match == last_etag or request.if_modified_since == request.response.last_modified:
+        has_changed = (if_none_match != last_etag and
+                       request.if_modified_since != request.response.last_modified)
+        if not has_changed:
             response = HTTPNotModified()
             response.headers['ETag'] = last_etag
             response.last_modified = last_update / 1000.0

@@ -65,8 +65,8 @@ class AMOTest(AMOTestCase):
 
     def test_amo_view_also_match_with_metrics_args(self):
         url = self.url + ('PRODUCT/BUILD_ID/BUILD_TARGET/LOCALE/CHANNEL/'
-                'OS_VERSION/DISTRIBUTION/DISTRIBUTION_VERSION/'
-                'PING_COUNT/TOTAL_PING_COUNT/DAYS_SINCE_LAST_PING/')
+                          'OS_VERSION/DISTRIBUTION/DISTRIBUTION_VERSION/'
+                          'PING_COUNT/TOTAL_PING_COUNT/DAYS_SINCE_LAST_PING/')
         resp = self.app.get(url)
 
         assert resp.content_type == "application/xml"
