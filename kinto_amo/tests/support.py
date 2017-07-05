@@ -17,8 +17,9 @@ class AMOTestCase(BaseWebTest, unittest.TestCase):
     entry_point = kinto_main
     config = 'config.ini'
 
-    def get_app_settings(self, extras=None):
-        ini_path = os.path.join(HERE, self.config)
+    @classmethod
+    def get_app_settings(cls, extras=None):
+        ini_path = os.path.join(HERE, cls.config)
         config = configparser.ConfigParser()
         config.read(ini_path)
         settings = dict(config.items('app:main'))

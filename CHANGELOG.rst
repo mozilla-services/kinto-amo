@@ -4,8 +4,9 @@ CHANGELOG
 0.4.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+**New features**
 
+- Add support for cache control headers (``If-None-Match`` and ``If-Modified-Since``) (fixes #21)
 
 0.3.0 (2016-10-27)
 ------------------
