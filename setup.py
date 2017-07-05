@@ -27,7 +27,7 @@ test_requirements = [
 
 setup(
     name='kinto-amo',
-    version='0.4.0',
+    version='0.5.0.dev0',
     description="AMO-style routing for Kinto - with XML",
     long_description=readme + '\n\n' + history,
     author="Mozilla",
