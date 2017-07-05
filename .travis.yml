@@ -3,6 +3,7 @@ python: 3.5
 env:
     - TOX_ENV=py35
     - TOX_ENV=flake8
+    - TOX_ENV=kinto-master
 install:
     - make install
 script:
@@ -11,7 +12,3 @@ after_success:
     # Report coverage results to coveralls.io
     - pip install coveralls
     - coveralls
-matrix:
-  include:
-    - env:
-        - TOX_ENV=kinto-master
