@@ -1,7 +1,7 @@
 CHANGELOG
 =========
 
-0.5.0 (unreleased)
+0.5.0 (2018-02-07)
 ------------------
 
 - Pass application ID and version to amo2kinto code when generating blocklist.xml. (#23)
