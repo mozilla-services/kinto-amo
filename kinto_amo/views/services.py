@@ -70,11 +70,11 @@ def get_blocklist(request):
         lastupdate='%s' % last_update
     )
 
-    write_addons_items(xml_tree, addons_records, api_ver=api_ver, app_id=app)
+    write_addons_items(xml_tree, addons_records, api_ver=api_ver, app_id=app, app_ver=app_ver)
     write_plugin_items(xml_tree, plugin_records, api_ver=api_ver,
                        app_id=app, app_ver=app_ver)
     write_gfx_items(xml_tree, gfx_records, api_ver=api_ver, app_id=app)
-    write_cert_items(xml_tree, cert_records, api_ver=api_ver)
+    write_cert_items(xml_tree, cert_records, api_ver=api_ver, app_id=app, app_ver=app_ver)
 
     doc = etree.ElementTree(xml_tree)
     request.response.content_type = "application/xml;charset=UTF-8"

@@ -75,7 +75,8 @@ class AMOTest(AMOTestCase):
         with mock.patch('kinto_amo.views.services.write_addons_items') as wai:
             self.app.get(self.url)
             assert wai.mock_calls[0][2] == {'api_ver': 3,
-                                            'app_id': constants.FIREFOX_APPID}
+                                            'app_id': constants.FIREFOX_APPID,
+                                            'app_ver': "46.0"}
 
     def test_amo_views_passes_api_and_app_ver_args_to_plugin_exporter(self):
         with mock.patch('kinto_amo.views.services.write_plugin_items') as wpi:
@@ -93,7 +94,9 @@ class AMOTest(AMOTestCase):
     def test_amo_views_passes_api_and_app_args_to_certificates_exporter(self):
         with mock.patch('kinto_amo.views.services.write_cert_items') as wci:
             self.app.get(self.url)
-            assert wci.mock_calls[0][2] == {'api_ver': 3}
+            assert wci.mock_calls[0][2] == {'api_ver': 3,
+                                            'app_id': constants.FIREFOX_APPID,
+                                            'app_ver': "46.0"}
 
 
 class AMOWithFixturesTest(AMOTestCase):
@@ -211,6 +214,42 @@ class AMOWithFixturesTest(AMOTestCase):
         gfx = list(xml.findall('./*/{}gfxBlacklistEntry'.format(namespace)))
         gfx_count = len(gfx)
         assert gfx_count == 1, 'More than one addon: %s' % gfx
+
+    def test_outdated_addons_are_ignored(self):
+        url = SERVICE_ENDPOINT.format(api_ver="3",
+                                      app=constants.FIREFOX_APPID,
+                                      app_ver="58.0")
+        resp = self.app.get(url)
+        xml = ET.fromstring(resp.body)
+        namespace = '{http://www.mozilla.org/2006/addons-blocklist}'
+
+        addons = list(xml.findall('./*/{}emItem'.format(namespace)))
+        addons_count = len(addons)
+        assert addons_count == 0, 'Unexpected add-ons found: %s' % addons
+
+    def test_outdated_plugins_are_ignored(self):
+        url = SERVICE_ENDPOINT.format(api_ver="3",
+                                      app=constants.FIREFOX_APPID,
+                                      app_ver="58.0")
+        resp = self.app.get(url)
+        xml = ET.fromstring(resp.body)
+        namespace = '{http://www.mozilla.org/2006/addons-blocklist}'
+
+        plugins = list(xml.findall('./*/{}pluginItem'.format(namespace)))
+        plugins_count = len(plugins)
+        assert plugins_count == 0, 'Unexpected plugins found: %s' % plugins
+
+    def test_no_certs_after_firefox_58(self):
+        url = SERVICE_ENDPOINT.format(api_ver="3",
+                                      app=constants.FIREFOX_APPID,
+                                      app_ver="58.0")
+        resp = self.app.get(url)
+        xml = ET.fromstring(resp.body)
+        namespace = '{http://www.mozilla.org/2006/addons-blocklist}'
+
+        certs = list(xml.findall('./*/{}certitem'.format(namespace)))
+        cert_count = len(certs)
+        assert cert_count == 0, 'Unexpected certs found: %s' % certs
 
 
 class AMOCustomTest(AMOTestCase):

@@ -14,7 +14,7 @@
         "targetApplication": [{
           "minVersion": "39.0a1",
           "guid": "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}",
-          "maxVersion": "*"}],
+          "maxVersion": "57.0"}],
         "minVersion": "0",
         "maxVersion": "*",
         "severity": 3}],
@@ -54,7 +54,7 @@
         "targetApplication": [{
           "minVersion": "4.0",
           "guid": "{ec8030f7-c20a-464f-9b0e-13a3a9e97384}",
-          "maxVersion": "16.*"}],
+          "maxVersion": "46.*"}],
         "minVersion": "0",
         "maxVersion": "10.2.9999",
         "severity": 0,
