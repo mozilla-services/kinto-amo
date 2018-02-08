@@ -145,14 +145,15 @@ class AMOWithFixturesTest(AMOTestCase):
         self.app.post_json(url, {"data": FIXTURES['gfx']["disabled"]},
                            headers=self.headers)
 
-        # Create certificates records
+        # Create many certificates records
         url = '/buckets/blocklists/collections/certificates/records'
-        resp = self.app.post_json(url, {
-            "data": FIXTURES['certificates']["enabled"]
-        }, headers=self.headers)
+        for i in range(100):
+            resp = self.app.post_json(url, {
+                "data": FIXTURES['certificates']["enabled"]
+            }, headers=self.headers)
+            self.last_modified = resp.json['data']['last_modified']
 
-        self.last_modified = resp.json['data']['last_modified']
-
+        # And one last disable one.
         self.app.post_json(url, {
             "data": FIXTURES['certificates']["disabled"]
         }, headers=self.headers)
@@ -177,7 +178,7 @@ class AMOWithFixturesTest(AMOTestCase):
 
         certItems = list(xml.findall('./*/{}certItem'.format(namespace)))
         cert_count = len(certItems)
-        assert cert_count == 1, 'More than one cert: %s' % certItems
+        assert cert_count == 100, 'More than 100 certs: %s' % certItems
 
     def test_not_enabled_addons_are_ignored(self):
         url = SERVICE_ENDPOINT.format(api_ver="3",

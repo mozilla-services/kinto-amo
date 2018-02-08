@@ -4,7 +4,9 @@ CHANGELOG
 1.0.1 (unreleased)
 ------------------
 
-- Nothing changed yet.
+**Bug fixes**
+
+- Fix last update / last modified of blocklist XML endpoint (fixes #25)
 
 
 1.0.0 (2018-02-07)

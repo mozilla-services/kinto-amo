@@ -1,6 +1,6 @@
 from pyramid.httpexceptions import HTTPNotFound, HTTPNotModified
 from kinto.core import Service, utils
-from kinto.core.storage import Filter
+from kinto.core.storage import Filter, Sort
 
 from amo2kinto.exporter import (
     write_addons_items, write_plugin_items, write_gfx_items, write_cert_items
@@ -26,29 +26,19 @@ def get_blocklist(request):
     # 1. Verify that we have a config for that prefix
     if prefix not in request.registry.amo_resources:
         raise HTTPNotFound()
-    last_update = 0
 
     # Addons blocklist
-    addons_records, addons_records_count = get_records(request, prefix, 'addons')
-    if addons_records:
-        last_update = addons_records[-1]['last_modified']
-
+    addons_records, addons_last_modified = get_records(request, prefix, 'addons')
     # Plugins blocklist
-    plugin_records, plugin_records_count = get_records(request, prefix, 'plugins')
-    if plugin_records:
-        last_update = max(last_update, plugin_records[-1]['last_modified'])
-
+    plugins_records, plugins_last_modified = get_records(request, prefix, 'plugins')
     # GFX blocklist
-    gfx_records, gfx_records_count = get_records(request, prefix, 'gfx')
-    if gfx_records:
-        last_update = max(last_update, gfx_records[-1]['last_modified'])
-
+    gfx_records, gfx_last_modified = get_records(request, prefix, 'gfx')
     # Certificates blocklist
-    cert_records, cert_records_count = get_records(request, prefix, 'certificates')
-    if cert_records:
-        last_update = max(last_update, cert_records[-1]['last_modified'])
+    cert_records, cert_last_modified = get_records(request, prefix, 'certificates')
 
     # Expose highest timestamp in response headers.
+    last_update = max(addons_last_modified, plugins_last_modified,
+                      gfx_last_modified, cert_last_modified)
     last_etag = '"{}"'.format(last_update)
     request.response.headers['ETag'] = last_etag
     request.response.last_modified = last_update / 1000.0
@@ -71,7 +61,7 @@ def get_blocklist(request):
     )
 
     write_addons_items(xml_tree, addons_records, api_ver=api_ver, app_id=app, app_ver=app_ver)
-    write_plugin_items(xml_tree, plugin_records, api_ver=api_ver,
+    write_plugin_items(xml_tree, plugins_records, api_ver=api_ver,
                        app_id=app, app_ver=app_ver)
     write_gfx_items(xml_tree, gfx_records, api_ver=api_ver, app_id=app)
     write_cert_items(xml_tree, cert_records, api_ver=api_ver, app_id=app, app_ver=app_ver)
@@ -90,7 +80,12 @@ def get_blocklist(request):
 
 def get_records(request, prefix, collection):
     resources = request.registry.amo_resources
-    return request.registry.storage.get_all(
-        collection_id="record",
-        parent_id=PARENT_PATTERN.format(**resources[prefix][collection]),
-        filters=[Filter('enabled', True, utils.COMPARISON.EQ)])
+    parent_id = PARENT_PATTERN.format(**resources[prefix][collection])
+    cid = "record"
+    records, count = request.registry.storage.get_all(
+        collection_id=cid,
+        parent_id=parent_id,
+        filters=[Filter('enabled', True, utils.COMPARISON.EQ)],
+        sorting=[Sort('last_modified', 1)])
+    last_modified = records[-1]['last_modified'] if count > 1 else 0
+    return records, last_modified
