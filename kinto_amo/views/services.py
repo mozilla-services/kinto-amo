@@ -7,7 +7,7 @@ from amo2kinto.exporter import (
 )
 from lxml import etree
 
-path = ('/{prefix}/{api_ver:\d+}/{application_guid}/{application_ver}/'
+path = ('/{prefix}/{api_ver:\\d+}/{application_guid}/{application_ver}/'
         '{metrics:.*}')
 
 PARENT_PATTERN = "/buckets/{bucket}/collections/{collection}"
