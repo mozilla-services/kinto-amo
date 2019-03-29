@@ -1,5 +1,5 @@
 flake8
-pytest==3.3.2
+pytest
 pytest-cache
 pytest-cover
 pytest-sugar
