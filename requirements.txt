@@ -23,7 +23,7 @@ lxml==4.3.3
 MarkupSafe==1.1.1
 PasteDeploy==2.0.1
 plaster==1.0
-plaster-pastedeploy==0.6
+plaster-pastedeploy==0.7
 pycparser==2.19
 pyramid==1.10.2
 pyramid-mailer==0.15.1
