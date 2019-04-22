@@ -2,7 +2,7 @@ amo2kinto==4.0.1
 attrs==19.1.0
 bcrypt==3.1.6
 certifi==2019.3.9
-cffi==1.12.2
+cffi==1.12.3
 chardet==3.0.4
 colander==1.7.0
 colorama==0.4.1
