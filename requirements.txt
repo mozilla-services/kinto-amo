@@ -20,7 +20,7 @@ kinto==14.2.0
 kinto-http==10.7.0
 logging-color-formatter==1.0.2
 lxml==4.6.3
-MarkupSafe==1.1.1
+MarkupSafe==2.0.0
 PasteDeploy==2.1.1
 plaster==1.0
 plaster-pastedeploy==0.7
