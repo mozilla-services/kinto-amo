@@ -5,6 +5,7 @@ include *.txt
 include Makefile
 include tox.ini
 
+include kinto_amo/blocklist.xml
 recursive-include kinto_amo/tests *
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]
